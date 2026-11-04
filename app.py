@@ -1,3 +1,4 @@
+import os
 import sqlite3
 from datetime import datetime
 from pathlib import Path
@@ -7,7 +8,8 @@ import yfinance as yf
 from nicegui import ui
 
 BASE_DIR = Path(__file__).resolve().parent
-DB_PATH = BASE_DIR / "stockscope.db"
+DB_PATH = Path(os.environ.get("STOCKSCOPE_DB_PATH", str(BASE_DIR / "stockscope.db")))
+DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 DEFAULT_TICKERS = ["RELIANCE.NS", "TCS.NS", "INFY.NS", "AAPL", "MSFT"]
 CACHE = {}
 
@@ -305,4 +307,4 @@ def show_page(page):
             render_research()
 
 show_page("overview")
-ui.run(title="StockScope", host="0.0.0.0", port=8080, reload=False)
+ui.run(title="StockScope", host="0.0.0.0", port=int(os.environ.get("PORT", "8080")), reload=False)
